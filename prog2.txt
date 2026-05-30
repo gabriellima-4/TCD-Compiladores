@@ -1,0 +1,16 @@
+// comentário
+
+int x = 10;
+float y = 12.5;
+
+if (x >= y)
+{
+    z = x + y;
+}
+
+abc @ 10;
+
+while (x != 0)
+{
+    x = x - 1;
+}
