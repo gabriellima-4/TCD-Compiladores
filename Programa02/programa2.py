@@ -2,6 +2,7 @@ import re
 import os
 
 tabela_simbolos = {
+    # Palavras reservadas reconhecidas inicialmente pelo analisador.
     "if": "PALAVRA_CHAVE",
     "while": "PALAVRA_CHAVE",
     "for": "PALAVRA_CHAVE",
@@ -12,6 +13,7 @@ tabela_simbolos = {
 
 def remover_comentarios(codigo):
 
+    # Remove comentarios de bloco no formato /* ... */.
     codigo = re.sub(
         r'/\*.*?\*/',
         '',
@@ -19,6 +21,7 @@ def remover_comentarios(codigo):
         flags=re.DOTALL
     )
 
+    # Remove comentarios de linha iniciados por //.
     codigo = re.sub(
         r'//.*',
         '',
@@ -32,6 +35,8 @@ def analise_lexica(codigo):
 
     erros = []
 
+    # Expressao regular que reconhece operadores, numeros, identificadores
+    # e delimitadores aceitos pela linguagem.
     padrao = (
         r'<=|>=|==|!=|'
         r'[+\-*/=<>]|'
@@ -52,6 +57,7 @@ def analise_lexica(codigo):
 
         linha = linha.strip()
 
+        # Guarda as posicoes cobertas por tokens validos para detectar erros.
         posicoes_validas = []
 
         for match in re.finditer(padrao, linha):
@@ -61,6 +67,7 @@ def analise_lexica(codigo):
                 range(match.start(), match.end())
             )
 
+            # Classifica cada lexema encontrado em seu respectivo token.
             if re.fullmatch(r'\d+\.\d+', lexema):
                 token = "NUMERO_DECIMAL"
 
@@ -86,6 +93,7 @@ def analise_lexica(codigo):
 
             else:
 
+                # Novos nomes sao cadastrados como identificadores.
                 tabela_simbolos[lexema] = "IDENTIFICADOR"
                 token = "IDENTIFICADOR"
 
@@ -97,6 +105,7 @@ def analise_lexica(codigo):
 
         # recuperação de erro
 
+        # Caracteres fora dos tokens reconhecidos sao reportados como erros.
         for indice, caractere in enumerate(linha):
 
             if (
@@ -114,10 +123,12 @@ def analise_lexica(codigo):
 
 def processar_arquivo(nome_arquivo):
 
+    # Confere se o arquivo existe antes de realizar a leitura.
     if not os.path.exists(nome_arquivo):
         print("Arquivo não encontrado.")
         return
 
+    # Le todo o codigo-fonte informado pelo usuario.
     with open(
         nome_arquivo,
         "r",
@@ -128,6 +139,7 @@ def processar_arquivo(nome_arquivo):
 
     codigo = remover_comentarios(codigo)
 
+    # Executa a analise e guarda possiveis erros encontrados.
     erros = analise_lexica(codigo)
 
     print("\nERROS")
