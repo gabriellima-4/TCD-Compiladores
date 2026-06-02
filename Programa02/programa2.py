@@ -28,6 +28,9 @@ def remover_comentarios(codigo):
         codigo
     )
 
+    # Remove espacos em branco
+    codigo = codigo.replace(" ", "")
+
     return codigo
 
 
@@ -138,6 +141,8 @@ def processar_arquivo(nome_arquivo):
         codigo = arq.read()
 
     codigo = remover_comentarios(codigo)
+
+    print(codigo)
 
     # Executa a analise e guarda possiveis erros encontrados.
     erros = analise_lexica(codigo)
